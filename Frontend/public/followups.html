@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Today's Follow-Ups</title>
+</head>
+<body>
+  <h1>Today's Follow-Ups</h1>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Phone</th>
+        <th>Follow-Up Date</th>
+        <th>Edit</th>
+      </tr>
+    </thead>
+    <tbody id="followUpList"></tbody>
+  </table>
+
+  <script>
+    async function loadFollowUps() {
+      const today = new Date().toISOString().split("T")[0];
+      const res = await fetch("https://backend-bhanu-app.onrender.com/api/cases");
+      const data = await res.json();
+
+      const list = document.getElementById("followUpList");
+      list.innerHTML = "";
+
+      data.forEach(caseItem => {
+        const caseFollowUp = caseItem.followUpDate?.split("T")[0];
+        if (caseFollowUp === today) {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${caseItem.name}</td>
+            <td>${caseItem.phone}</td>
+            <td>${caseFollowUp}</td>
+            <td><a href="case-form.html?id=${caseItem._id}">Edit</a></td>
+          `;
+          list.appendChild(row);
+        }
+      });
+    }
+
+    loadFollowUps();
+  </script>
+</body>
+</html>
